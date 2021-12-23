@@ -1,0 +1,251 @@
+<html>
+    <head>
+        <title> View Cars</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+       
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    </head>
+    <body>
+        <h1>Cars</h1>
+        <div> <button id="showCreateButton" onclick="showCreate()">Create</button></div>
+        <div>
+            <table class="table" id="carTable">
+                <tr>
+                        <th>id</th>
+                        <th>Plate</th>
+                        <th>
+                            Model
+                        </th>
+                        <th>Year</th>
+                        <th>Fuel</th>
+                        <th>Update</th>
+                        <th>Delete</th>
+                </tr>
+                
+            </table>
+        </div>
+        <div id='createUpdateForm' style="display: none">
+                <h2><span id="createLabel">Create a</span> <span id="updateLabel">update</span> Book</h2>
+                <input type="hidden" name="id"/>
+                Plate <input type="text" name="Plate" /><br/>
+                Model <input type="text" name="Model"/> <br/>
+                Year <input type="number" name="Year"/> <br/>
+                <span><button id="doCreateButton" onclick="doCreate()">Create</button></span>
+                <span><button id="doUpdateButton" onclick="doUpdate()">Update</button></span>
+        </div>
+    </body>
+    <script>
+    function showCreate(){
+        document.getElementById('showCreateButton').style.display="none"
+        document.getElementById('carTable').style.display="none"
+        document.getElementById('createUpdateForm').style.display="block"
+
+        document.getElementById('createLabel').style.display="inline"
+        document.getElementById('updateLabel').style.display="none"
+
+        document.getElementById('doCreateButton').style.display="block"
+        document.getElementById('doUpdateButton').style.display="none"
+
+    }
+    function showViewAll(){
+        document.getElementById('showCreateButton').style.display="block"
+        document.getElementById('carTable').style.display="block"
+        document.getElementById('createUpdateForm').style.display="none"
+    }
+    function showUpdate(buttonElement){
+        document.getElementById('showCreateButton').style.display="none"
+        document.getElementById('carTable').style.display="none"
+        document.getElementById('createUpdateForm').style.display="block"
+
+        document.getElementById('createLabel').style.display="none"
+        document.getElementById('updateLabel').style.display="inline"
+
+        document.getElementById('doCreateButton').style.display="none"
+        document.getElementById('doUpdateButton').style.display="block"
+
+
+        var rowElement = buttonElement.parentNode.parentNode
+        // these is a way of finding the closest <tr> which would safer, closest()
+        
+        var car = getCarFromRow(rowElement)
+        populateFormWithCar(car)
+    }
+    function doCreate(){
+        var form = document.getElementById('createUpdateForm')
+
+        var car = {}
+       
+        car.plate = form.querySelector('input[name="plate"]').value
+        car.model = form.querySelector('input[name="model"]').value
+        car.year = form.querySelector('input[name="year"]').value
+        car.fuel = form.querySelector('input[name="fuel"]').value
+        console.log(JSON.stringify(car))
+        createBookAjax(car)
+        
+        
+    }
+    function doUpdate(){
+        var car = getCarFromForm();
+        var rowElement = document.getElementById(car.plate);
+        updateBookAjax(car);
+        setBookInRow(rowElement,car);
+       
+        clearForm();
+        showViewAll();
+    }
+    function doDelete(r){
+        var tableElement = document.getElementById('carTable');
+        var rowElement = r.parentNode.parentNode;
+        var index = rowElement.rowIndex;
+        deleteBookAjax(rowElement.getAttribute("id"));
+        tableElement.deleteRow(index);
+    }
+    function addBookToTable(car){
+        var tableElement = document.getElementById('carTable')
+        var rowElement = tableElement.insertRow(-1)
+        rowElement.setAttribute('id',car.id)
+        var cell1 = rowElement.insertCell(0);
+        cell1.innerHTML = car.id
+        var cell2 = rowElement.insertCell(1);
+        cell2.innerHTML = car.plate
+        var cell3 = rowElement.insertCell(2);
+        cell3.innerHTML = car.model
+        var cell4 = rowElement.insertCell(3);
+        cell4.innerHTML = car.year
+        var cell5 = rowElement.insertCell(4);
+        cell4.innerHTML = car.fuel
+        var cell5 = rowElement.insertCell(5);
+        cell5.innerHTML = '<button onclick="showUpdate(this)">Update</button>'
+        var cell6 = rowElement.insertCell(6);
+        cell6.innerHTML = '<button onclick=doDelete(this)>delete</button>'
+
+    }
+
+    function clearForm(){
+        var form = document.getElementById('createUpdateForm')
+
+        form.querySelector('input[name="plate"]').value=''
+        form.querySelector('input[name="model"]').value=''
+        form.querySelector('input[name="year"]').value=''
+        form.querySelector('input[name="fuel"]').value=''
+    }
+    function getBookFromRow(rowElement){
+        var car ={}
+        car.id  = rowElement.getAttribute('id')
+        car.plate = rowElement.cells[1].firstChild.textContent
+        car.model = rowElement.cells[2].firstChild.textContent
+        car.year = parseInt(rowElement.cells[3].firstChild.textContent,10)
+        car.fuel = rowElement.cells[4].firstChild.textContent
+        return car
+    }
+    function setBookInRow(rowElement, car){
+        rowElement.cells[0].firstChild.textContent= car.id  
+        rowElement.cells[1].firstChild.textContent= car.plate 
+        rowElement.cells[2].firstChild.textContent= car.model
+        rowElement.cells[3].firstChild.textContent= car.year
+        rowElement.cells[4].firstChild.textContent= car.fuel
+    }
+    function populateFormWithBook(car){
+        var form = document.getElementById('createUpdateForm')
+        form.querySelector('input[name="id"]').disabled = true
+
+        form.querySelector('input[name="id"]').value  = car.id
+        form.querySelector('input[name="plate"]').value= car.plate
+        form.querySelector('input[name="model"]').value= car.model
+        form.querySelector('input[name="year"]').value= car.year
+        form.querySelector('input[name="fuel"]').value= car.fuel
+        return car
+    }
+    function getBookFromForm(){
+        var form = document.getElementById('createUpdateForm')
+        var car = {}
+        car.id = form.querySelector('input[name="id"]').value
+        car.plate = form.querySelector('input[name="plate"]').value
+        car.model = form.querySelector('input[name="model"]').value
+        car.year = parseInt(form.querySelector('input[name="year"]').value,10)
+        car.fuel = form.querySelector('input[name="fuel"]').value
+        console.log(JSON.stringify(car))
+        return car
+    }
+    function getAllAjax(){
+        $.ajax({
+            "url": "http://127.0.0.1:5000/cars",
+            "method":"GET",
+            "data":"",
+            "dataType": "JSON",
+            "success":function(result){
+                //console.log(result);
+                for (car of result){
+                    addBookToTable(car);
+                }
+                
+            },
+            "error":function(xhr,status,error){
+                console.log("error: "+status+" msg:"+error);
+            }
+        });
+
+    }
+    function createBookAjax(car){
+        //var car = {"reg":"12 D 1234","make":"Fiat","model":"Punto","price":3000}
+        console.log(JSON.stringify(car));
+        $.ajax({
+            "url": "http://127.0.0.1:5000/cars",
+            "method":"POST",
+            "data":JSON.stringify(book),
+            "dataType": "JSON",
+            contentType: "application/json; charset=utf-8",
+            "success":function(result){
+                //console.log(result);
+                car.id = result.id
+                addBookToTable(car)
+                clearForm()
+                showViewAll()
+            },
+            "error":function(xhr,status,error){
+                console.log("error: "+status+" msg:"+error);
+            }
+        });
+    }
+    function updateBookAjax(book){
+        //var car = {"reg":"12 D 1234","price":8000}
+        console.log(JSON.stringify(car));
+        $.ajax({
+            "url": "http://127.0.0.1:5000/cars/"+encodeURI(car.id),
+            "method":"PUT",
+            "data":JSON.stringify(car),
+            "dataType": "JSON",
+            contentType: "application/json; charset=utf-8",
+            "success":function(result){
+               // console.log(result);
+                  
+            },
+            "error":function(xhr,status,error){
+                console.log("error: "+status+" msg:"+error);
+            }
+        });
+    }
+    function deleteBookAjax(id){
+        
+        //console.log(JSON.stringify('deleting '+id));
+        $.ajax({
+            "url": "http://127.0.0.1:5000/books/"+encodeURI(id),
+            "method":"DELETE",
+            "data":"",
+            "dataType": "JSON",
+            contentType: "application/json; charset=utf-8",
+            "success":function(result){
+                //console.log(result);
+                  
+            },
+            "error":function(xhr,status,error){
+                console.log("error: "+status+" msg:"+error);
+            }
+        });
+    }
+    getAllAjax();
+  
+
+    
+    </script>
+</html>
