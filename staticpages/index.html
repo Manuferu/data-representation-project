@@ -5,17 +5,55 @@
        
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     </head>
+    <style>
+        .background_image{
+            position: absolute;
+            overflow: hidden;
+            padding: 16px;
+            border: 0.5px dashed green;
+            z-index: -1;
+            opacity: 0.6;
+            background-size: cover;
+            overflow: scroll
+        }
+        .table th {
+            background-color: #009879;
+            color: #ffffff;
+            text-align: center;
+            padding: 12px 15px;
+            border-bottom: 1px solid #dddddd;
+        }
+        .table tbody tr {
+            border-bottom: 1px solid #dddddd;
+        }
+
+        .table tbody tr:nth-of-type(even) {
+            background-color: #c0baba;
+        }
+
+        .title{
+            text-align: center;
+            color: #2e2c2c;
+            font-family: arial, sans-serif;
+            font-size: 30px;
+            font-weight: bold;
+            margin-top: 0px;
+            margin-bottom: 1px;
+        }
+    </style>
     <body>
-        <h1>Cars</h1>
+        <h1 class="title"><marquee>Welcome to Cars database</marquee></h1>
+        
+        <div class="background_image">
+            
+            <img src="images/cars.png">
+        </div>
         <div> <button id="showCreateButton" onclick="showCreate()">Create</button></div>
         <div>
             <table class="table" id="carTable">
                 <tr>
-                        <th>id</th>
                         <th>Plate</th>
-                        <th>
-                            Model
-                        </th>
+                        <th>Model</th>
                         <th>Year</th>
                         <th>Fuel</th>
                         <th>Update</th>
@@ -25,11 +63,11 @@
             </table>
         </div>
         <div id='createUpdateForm' style="display: none">
-                <h2><span id="createLabel">Create a</span> <span id="updateLabel">update</span> Book</h2>
-                <input type="hidden" name="id"/>
-                Plate <input type="text" name="Plate" /><br/>
-                Model <input type="text" name="Model"/> <br/>
-                Year <input type="number" name="Year"/> <br/>
+                <h2><span id="createLabel">Create a</span> <span id="updateLabel">update</span> Car</h2>
+                <input type="number" name="plate" />Plate <br/>
+                <input type="text" name="model"/>Model  <br/>
+                <input type="number" name="year"/>Year  <br/>
+                <input type="text" name="fuel"/>Fuel  <br/>
                 <span><button id="doCreateButton" onclick="doCreate()">Create</button></span>
                 <span><button id="doUpdateButton" onclick="doUpdate()">Update</button></span>
         </div>
@@ -80,15 +118,15 @@
         car.year = form.querySelector('input[name="year"]').value
         car.fuel = form.querySelector('input[name="fuel"]').value
         console.log(JSON.stringify(car))
-        createBookAjax(car)
+        createCarAjax(car)
         
         
     }
     function doUpdate(){
         var car = getCarFromForm();
-        var rowElement = document.getElementById(car.plate);
-        updateBookAjax(car);
-        setBookInRow(rowElement,car);
+        var rowElement = document.getElementById(plate);///
+        updateCarAjax(car);
+        setCarInRow(rowElement,car);
        
         clearForm();
         showViewAll();
@@ -97,26 +135,26 @@
         var tableElement = document.getElementById('carTable');
         var rowElement = r.parentNode.parentNode;
         var index = rowElement.rowIndex;
-        deleteBookAjax(rowElement.getAttribute("id"));
+        deleteCarAjax(rowElement.getAttribute("plate"));
         tableElement.deleteRow(index);
     }
-    function addBookToTable(car){
+    function addCarToTable(car){
         var tableElement = document.getElementById('carTable')
         var rowElement = tableElement.insertRow(-1)
-        rowElement.setAttribute('id',car.id)
-        var cell1 = rowElement.insertCell(0);
-        cell1.innerHTML = car.id
-        var cell2 = rowElement.insertCell(1);
+        rowElement.setAttribute('plate',car.plate)
+        /* var cell1 = rowElement.insertCell(0);
+        cell1.innerHTML = car.id */
+        var cell2 = rowElement.insertCell(0);
         cell2.innerHTML = car.plate
-        var cell3 = rowElement.insertCell(2);
+        var cell3 = rowElement.insertCell(1);
         cell3.innerHTML = car.model
-        var cell4 = rowElement.insertCell(3);
+        var cell4 = rowElement.insertCell(2);
         cell4.innerHTML = car.year
-        var cell5 = rowElement.insertCell(4);
+        var cell5 = rowElement.insertCell(3);
         cell4.innerHTML = car.fuel
-        var cell5 = rowElement.insertCell(5);
+        var cell5 = rowElement.insertCell(4);
         cell5.innerHTML = '<button onclick="showUpdate(this)">Update</button>'
-        var cell6 = rowElement.insertCell(6);
+        var cell6 = rowElement.insertCell(5);
         cell6.innerHTML = '<button onclick=doDelete(this)>delete</button>'
 
     }
@@ -129,37 +167,39 @@
         form.querySelector('input[name="year"]').value=''
         form.querySelector('input[name="fuel"]').value=''
     }
-    function getBookFromRow(rowElement){
+    function getCarFromRow(rowElement){
         var car ={}
-        car.id  = rowElement.getAttribute('id')
-        car.plate = rowElement.cells[1].firstChild.textContent
-        car.model = rowElement.cells[2].firstChild.textContent
-        car.year = parseInt(rowElement.cells[3].firstChild.textContent,10)
-        car.fuel = rowElement.cells[4].firstChild.textContent
+        /*car.id  = rowElement.getAttribute('id')  parseInt(rowElement.cells[3].firstChild.textContent,10)*/
+        /* rowElement.getAttribute('plate')*/
+        car.plate = rowElement.getAttribute('id')
+        car.model = rowElement.cells[1].firstChild.textContent
+        car.year = rowElement.cells[2].firstChild.textContent
+        car.fuel = rowElement.cells[3].firstChild.textContent
         return car
     }
-    function setBookInRow(rowElement, car){
-        rowElement.cells[0].firstChild.textContent= car.id  
-        rowElement.cells[1].firstChild.textContent= car.plate 
-        rowElement.cells[2].firstChild.textContent= car.model
-        rowElement.cells[3].firstChild.textContent= car.year
-        rowElement.cells[4].firstChild.textContent= car.fuel
+    function setCarInRow(rowElement, car){
+        
+        rowElement.getAttribute('plate')= car.plate 
+        rowElement.cells[1].firstChild.textContent= car.model
+        rowElement.cells[2].firstChild.textContent= car.year
+        rowElement.cells[3].firstChild.textContent= car.fuel
     }
-    function populateFormWithBook(car){
+    function populateFormWithCar(car){
         var form = document.getElementById('createUpdateForm')
-        form.querySelector('input[name="id"]').disabled = true
-
-        form.querySelector('input[name="id"]').value  = car.id
+        /*form.querySelector('input[name="id"]').disabled = true*/
         form.querySelector('input[name="plate"]').value= car.plate
+        form.querySelector('input[name="plate"]').disabled= true
+        /*form.querySelector('input[name="id"]').value  = car.id*/
+        
         form.querySelector('input[name="model"]').value= car.model
         form.querySelector('input[name="year"]').value= car.year
         form.querySelector('input[name="fuel"]').value= car.fuel
         return car
     }
-    function getBookFromForm(){
+    function getCarFromForm(){
         var form = document.getElementById('createUpdateForm')
         var car = {}
-        car.id = form.querySelector('input[name="id"]').value
+        /*car.id = form.querySelector('input[name="id"]').value*/
         car.plate = form.querySelector('input[name="plate"]').value
         car.model = form.querySelector('input[name="model"]').value
         car.year = parseInt(form.querySelector('input[name="year"]').value,10)
@@ -176,7 +216,7 @@
             "success":function(result){
                 //console.log(result);
                 for (car of result){
-                    addBookToTable(car);
+                    addCarToTable(car);
                 }
                 
             },
@@ -186,19 +226,19 @@
         });
 
     }
-    function createBookAjax(car){
+    function createCarAjax(car){
         //var car = {"reg":"12 D 1234","make":"Fiat","model":"Punto","price":3000}
         console.log(JSON.stringify(car));
         $.ajax({
             "url": "http://127.0.0.1:5000/cars",
             "method":"POST",
-            "data":JSON.stringify(book),
+            "data":JSON.stringify(car),
             "dataType": "JSON",
             contentType: "application/json; charset=utf-8",
             "success":function(result){
                 //console.log(result);
-                car.id = result.id
-                addBookToTable(car)
+                car.plate = result.id
+                addCarToTable(car)
                 clearForm()
                 showViewAll()
             },
@@ -207,17 +247,17 @@
             }
         });
     }
-    function updateBookAjax(book){
+    function updateCarAjax(car){
         //var car = {"reg":"12 D 1234","price":8000}
         console.log(JSON.stringify(car));
         $.ajax({
-            "url": "http://127.0.0.1:5000/cars/"+encodeURI(car.id),
+            "url": "http://127.0.0.1:5000/cars/"+encodeURI(car.plate),
             "method":"PUT",
             "data":JSON.stringify(car),
             "dataType": "JSON",
             contentType: "application/json; charset=utf-8",
             "success":function(result){
-               // console.log(result);
+               console.log(result);
                   
             },
             "error":function(xhr,status,error){
@@ -225,11 +265,11 @@
             }
         });
     }
-    function deleteBookAjax(id){
+    function deleteCarAjax(plate){
         
         //console.log(JSON.stringify('deleting '+id));
         $.ajax({
-            "url": "http://127.0.0.1:5000/books/"+encodeURI(id),
+            "url": "http://127.0.0.1:5000/cars/"+encodeURI(plate),
             "method":"DELETE",
             "data":"",
             "dataType": "JSON",

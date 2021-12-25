@@ -1,12 +1,13 @@
 import mysql.connector
+import dbconfig as cfg
 class carsDAO:
     db=""
     def __init__(self): 
         self.db = mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="",
-        database="datarepresentation"
+        host= cfg.mysql['host'],
+        user= cfg.mysql['user'],
+        password= cfg.mysql['password'],
+        database= cfg.mysql['database']
         )
     def create(self, car):
         cursor = self.db.cursor()
@@ -34,10 +35,10 @@ class carsDAO:
 
         return returnArray
 
-    def findByID(self, plate):
+    def findByID(self, car):
         cursor = self.db.cursor()
         sql="select * from cars where plate = %s"
-        values = [plate]
+        values = [int(car['plate'])]
         cursor.execute(sql, values)
         result = cursor.fetchone()
         return self.convertToDictionary(result)

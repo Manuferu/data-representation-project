@@ -15,7 +15,10 @@ def getAll():
 # find By id
 @app.route('/cars/<int:plate>')
 def findById(plate):
-    return jsonify(carsDAO.findByID(plate))
+    foundCar = carsDAO.findByID(plate)
+
+    return jsonify(foundCar)
+    #return jsonify(carsDAO.findByID(car))
 
 # create
 # curl -X POST -d "{\"plate\":\"123\", \"model\":\"Ford\", \"year\":123, \"fuel\":\"test\"}" -H Content-Type:application/json http://127.0.0.1:5000/cars
@@ -46,6 +49,8 @@ def update(plate):
     if len(foundcars) == {}:
         return jsonify({}), 404
     currentCar = foundcars[0]
+    if 'plate' in request.json:
+        currentCar['plate'] = request.json['plate']
     if 'model' in request.json:
         currentCar['model'] = request.json['model']
     if 'year' in request.json:
