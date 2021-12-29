@@ -9,9 +9,12 @@ In this project, it has been created a car registration in a database. this data
 
 - **Staticpages**
     - ***index.html*** : html file where the user will find the structure of the web site to interact and populate the database.
+    - **Images** :  Folder with images used in the html file
 
 - **carsDAO.py** : file where it is written the API designed with all functions to iteract with the content (how to create, delete, update content...).
 
 - **testcarsDAO.py** : file where to try the API functionalities.
 
 - **server.py** : server file written using flask. Needed to sync database and web site
+
+- **config.py** :  Configuration file
