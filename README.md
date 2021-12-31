@@ -18,3 +18,6 @@ In this project, it has been created a car registration in a database. this data
 - **server.py** : server file written using flask. Needed to sync database and web site
 
 - **config.py** :  Configuration file
+
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
