@@ -38,28 +38,29 @@ class carsDAO:
     def findByID(self, car):
         cursor = self.db.cursor()
         sql="select * from cars where plate = %s"
-        values = [int(car['plate'])]
+        values = [car['plate']]
         cursor.execute(sql, values)
         result = cursor.fetchone()
         return self.convertToDictionary(result)
 
     def update(self, car):
         cursor = self.db.cursor()
-        sql="update cars set model= %s, year=%s, fuel=%s  where plate = %s"
+        sql="update cars set plate = %s, model= %s, year=%s, fuel=%s  where plate = %s"
         values = [
+            car['plate'],
             car['model'], 
             car['year'], 
             car['fuel'], 
-            car['plate'] 
+            car['plate']
         ]
         cursor.execute(sql, values)
         self.db.commit()
         return car
     
-    def delete(self, plate):
+    def delete(self, car):
         cursor = self.db.cursor()
         sql="delete from cars where plate = %s"
-        values = [plate]
+        values = [car['plate']]
 
         cursor.execute(sql, values)
 
@@ -68,7 +69,7 @@ class carsDAO:
         return {}
     
     def convertToDictionary(self, result):
-        colnames=['plate','model','year','fuel']
+        colnames=['id','plate','model','year','fuel']
         car = {}
         
         if result:

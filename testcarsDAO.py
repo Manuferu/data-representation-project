@@ -16,32 +16,32 @@ from carsDAO import carsDAO
 #for cars in allCars:
 #  print(cars)
 car = {
-    'plate' : 11111,
-    'model' : 'Ford',
+    'plate' : 11112,
+    'model' : 'Ferrari',
     'year' : 2021,
     'fuel' : 'Diesel'
 }
 car2 = {
-    'plate' : 1222,
-    'model' : 'Ford',
-    'year' : 2021,
+    'plate' : 1223,
+    'model' : 'F',
+    'year' : 2022,
     'fuel' : 'Petrol'
 }
 # delete
-#returnvalue = carsDAO.create(car2)
+returnvalue = carsDAO.create(car)
 #print(returnvalue)
-#returnvalue = carsDAO.findByID(car2['plate'])
+#returnvalue = carsDAO.findByID(car2)
 #print("find by Id: ")
 #print(returnvalue)
 #returnvalue = carsDAO.getAll()
 #print(returnvalue)
-returnvalue = carsDAO.findByID(car)
-print(returnvalue)
+#returnvalue = carsDAO.findByID('1')
+#print(returnvalue)
 #returnvalue = carsDAO.update(car2)
 #print(returnvalue)
-#returnvalue = carsDAO.findByID(car2['plate'])
+#returnvalue = carsDAO.findByID(car2)
 #print(returnvalue)
-#returnvalue = carsDAO.delete(car2['plate'])
+#returnvalue = carsDAO.delete(car)
 #print(returnvalue)
 #returnvalue = carsDAO.getAll()
 #print(returnvalue)

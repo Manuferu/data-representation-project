@@ -7,14 +7,16 @@ app = Flask(__name__, static_url_path='', static_folder='staticpages')
 
 @app.route('/')
 def index():
-    return "hello"
+    return "You are successfully in"
 #get all
 @app.route('/cars')
 def getAll():
     return jsonify(carsDAO.getAll())
 # find By id
 @app.route('/cars/<int:plate>')
+
 def findById(plate):
+
     foundCar = carsDAO.findByID(plate)
 
     return jsonify(foundCar)
@@ -41,10 +43,14 @@ def create():
     return "served by Create "
 
 #update
-# curl -X PUT -d "{\"model\":\"new model\", \"fuel\":"Petrol"}" -H "content-type:application/json" http://127.0.0.1:5000/cars/1
+
+# curl -X PUT -d "{\"plate\":\"123\", \"model\":\"Ferrari\", \"year\":1235, \"fuel\":\"test\"}" -H "content-type:application/json" http://127.0.0.1:5000/cars/1234
 @app.route('/cars/<int:plate>', methods=['PUT'])
+
 def update(plate):
+
     foundcars = carsDAO.findByID(plate)
+    print(foundcars)
     print(foundcars)
     if len(foundcars) == {}:
         return jsonify({}), 404
