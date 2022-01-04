@@ -27,5 +27,6 @@ If everything goes well, you will be able to successfully use the web portal.
 
 - **config.py** :  Configuration file
 
+- **specifications.txt** : file containing a copy of the environment used in my laptop to develop the project. In case you want to replicate the environment, please open copy this environment in your laptop.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
